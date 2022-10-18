@@ -1,8 +1,12 @@
+import pandas as pd
+
 import feeder_fault_locator as ffl
 import incomer_fault_locator as ifl
 import common as cn
-amplitude = [100, 150, 10]
-phase = [30, 90, 10]
+
+amplitude_fault = [100, 150, 10]
+phase_fault = [30, 90, 10]
+
 
 def input_console_parameters():
     print(cn.function_array)
@@ -27,15 +31,38 @@ def choose_fault_locator():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    # choose_fault_locator()
-    phasor = cn.generate_phasor_data(amplitude, phase[0], 0)
+    # # choose_fault_locator()
+    phasor = cn.generate_phasor_data(amplitude_fault, phase_fault[0], 0)
     print(phasor)
-    phasor_str = cn.convert_phasor_to_string(phasor)
-    print(phasor_str)
-    # print(phasor_str.size)
-    phasor_polar = cn.convert_string_to_phasor(phasor_str)
-    print(phasor_polar)
-    # phasor_ri = cn.convert_ap_to_ri(phasor)
-    # print(phasor_ri)
-    # phasor_ph = cn.convert_ri_to_ap(phasor_ri)
-    # print(phasor_ph)
+    # phasor_1 = cn.generate_phasor_data(amplitude_fault, 60, 0)
+    # print(phasor_1)
+    # # add
+    # phasor_add = cn.add_phasor(phasor, phasor_1, [1, 1])
+    # print("add:")
+    # print(phasor_add)
+    # print()
+    # # sub
+    # print("sub:")
+    # phasor_sub = cn.sub_phasor(phasor, phasor_1, [1, 1])
+    # print(phasor_sub)
+    # # mul
+    # print("mul:")
+    # phasor_mul = cn.mul_phasor(phasor, phasor_1, [1, 1])
+    # print(phasor_mul)
+    # # div
+    # print("div:")
+    # phasor_div = cn.div_phasor(phasor, phasor_1, [1, 1])
+    # print(phasor_div)
+    # # phasor_str = cn.convert_phasor_to_string(phasor)
+    # # print(phasor_str)
+    # # print(phasor_str.size)
+    # # phasor_polar = cn.convert_string_to_phasor(phasor_str)
+    # # print(phasor_polar)
+    # # phasor_ri = cn.convert_ap_to_ri(phasor)
+    # # print(phasor_ri)
+    # # print(phasor)
+    # # phasor_ph = cn.convert_ri_to_ap(phasor_ri)
+    # # print(phasor_ph)
+    # print(phasor)
+    # print(phasor_1)
+

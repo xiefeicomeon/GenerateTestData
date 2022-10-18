@@ -2,15 +2,11 @@
 import numpy as np
 import cmath
 
-
 # some variables
 function_name = "feeder"
 function_array = ["feeder", "incomer", "exit"]
 # state of function: generate or analyse
 state = ""
-# function data file path
-feeder_file_path = ""
-incomer_file_path = ""
 
 
 def generate_phasor_data(amplitude, phase, mode):
@@ -72,7 +68,7 @@ def convert_ri_to_ap(phasor_ri):
         for i in range(0, phasor_ri[0].size):
             z_ploar = cmath.polar(complex(phasor_ri[0, i], phasor_ri[1, i]))
             amplitude.append(z_ploar[0])
-            phase.append(z_ploar[1]*180)
+            phase.append(z_ploar[1] * 180/cmath.pi)
         # print(amplitude)
         # print(phase)
         phasor_ploar = np.array([amplitude, phase], dtype=float)
@@ -91,7 +87,7 @@ def convert_ap_to_ri(phasor_ploar):
     imag = []
     if phasor_ploar.any != np.nan:
         # 将相位转换为弧度
-        phasor_ploar[1] = phasor_ploar[1]/180
+        phasor_ploar[1] = (phasor_ploar[1] / 180)*cmath.pi
         # 遍历phasor_ploar的幅值与相位
         for i in range(0, phasor_ploar[0].size):
             rect = cmath.rect(phasor_ploar[0, i], phasor_ploar[1, i])
@@ -100,6 +96,7 @@ def convert_ap_to_ri(phasor_ploar):
         # print(real)
         # print(imag)
         phasor_ri = np.array([real, imag], dtype=float)
+        phasor_ploar[1] = (phasor_ploar[1] / cmath.pi)*180
     return phasor_ri
 
 
@@ -117,7 +114,7 @@ def convert_phasor_to_string(phasor_ploar):
         for i in range(0, phasor_ploar[0].size):
             amplitude = round(phasor_ploar[0, i], 2)
             phase = round(phasor_ploar[1, i], 2)
-            str_temp = str(amplitude)+"<"+str(phase)
+            str_temp = str(amplitude) + "<" + str(phase)
             phasor_str_temp.append(str_temp)
     phasor_ploar_str = np.array([phasor_str_temp])
     return phasor_ploar_str
@@ -141,3 +138,97 @@ def convert_string_to_phasor(phasor_ploar_str):
     if len(amplitude) != 0:
         phasor_ploar = np.array([amplitude, phase], dtype=float)
     return phasor_ploar
+
+
+def add_phasor(phasor_a, phasor_b, phasor_mode):
+    """
+    相量相加
+    :param phasor_a:相量一
+    :param phasor_b:相量二
+    :param phasor_mode:[0,0],[0,1],[1,0],[1,1] 0-直角坐标系相量， 1-极坐标系相量,
+    :return: phasor_a+phasor_b
+    """
+    phasor_ret = np.full((1, 1), np.nan)
+    phasor_ta = phasor_a
+    phasor_tb = phasor_b
+    if phasor_a.shape == phasor_b.shape:
+        if phasor_mode[0] == 1:
+            phasor_ta = convert_ap_to_ri(phasor_a)
+        if phasor_mode[1] == 1:
+            phasor_tb = convert_ap_to_ri(phasor_b)
+        phasor_ret = phasor_ta + phasor_tb
+
+    return phasor_ret
+
+
+def sub_phasor(phasor_a, phasor_b, phasor_mode):
+    """
+    相量相减
+    :param phasor_a:相量一
+    :param phasor_b:相量二
+    :param phasor_mode:[0,0],[0,1],[1,0],[1,1] 0-直角坐标系相量， 1-极坐标系相量,
+    :return: phasor_a-phasor_b
+    """
+
+    phasor_ret = np.full((1, 1), np.nan)
+    phasor_ta = phasor_a
+    phasor_tb = phasor_b
+    if phasor_a.shape == phasor_b.shape:
+        if phasor_mode[0] == 1:
+            phasor_ta = convert_ap_to_ri(phasor_a)
+        if phasor_mode[1] == 1:
+            phasor_tb = convert_ap_to_ri(phasor_b)
+        phasor_ret = phasor_ta - phasor_tb
+    return phasor_ret
+
+
+def mul_phasor(phasor_a, phasor_b, phasor_mode):
+    """
+    相量相乘
+    :param phasor_a:相量一
+    :param phasor_b:相量二
+    :param phasor_mode:[0,0],[0,1],[1,0],[1,1] 0-直角坐标系相量， 1-极坐标系相量,
+    :return: phasor_a*phasor_b
+    """
+    phasor_ret = np.full((1, 1), np.nan)
+    phasor_ta = phasor_a
+    phasor_tb = phasor_b
+    if phasor_a.shape == phasor_b.shape:
+        if phasor_mode[0] == 0:
+            phasor_ta = convert_ri_to_ap(phasor_a)
+        if phasor_mode[1] == 0:
+            phasor_tb = convert_ri_to_ap(phasor_b)
+        # print(phasor_ta+phasor_tb)
+        phasor_amplitude = phasor_ta[0]*phasor_tb[0]
+        phasor_phase = phasor_ta[1]+phasor_tb[1]
+        # print(phasor_amplitude)
+        # print(phasor_phase)
+        phasor_ret = convert_ap_to_ri(np.array([phasor_amplitude, phasor_phase]))
+    return phasor_ret
+
+
+def div_phasor(phasor_a, phasor_b, phasor_mode):
+    """
+    相量相除
+   :param phasor_a:相量一
+    :param phasor_b:相量二
+    :param phasor_mode:[0,0],[0,1],[1,0],[1,1] 0-直角坐标系相量， 1-极坐标系相量,
+    :return: phasor_a/phasor_b
+    """
+
+    phasor_ret = np.full((1, 1), np.nan)
+    phasor_ta = phasor_a
+    phasor_tb = phasor_b
+    if phasor_a.shape == phasor_b.shape:
+        if phasor_mode[0] == 0:
+            phasor_ta = convert_ri_to_ap(phasor_a)
+        if phasor_mode[1] == 0:
+            phasor_tb = convert_ri_to_ap(phasor_b)
+        phasor_amplitude = phasor_ta[0] / phasor_tb[0]
+        phasor_phase = phasor_ta[1] - phasor_tb[1]
+        # print(phasor_amplitude)
+        # print(phasor_phase)
+        phasor_ret = convert_ap_to_ri(np.array([phasor_amplitude, phasor_phase]))
+    return phasor_ret
+
+
