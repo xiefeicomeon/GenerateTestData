@@ -32,8 +32,8 @@ def choose_fault_locator():
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # # choose_fault_locator()
-    phasor = cn.generate_phasor_data(amplitude_fault, phase_fault[0], 0)
-    print(phasor)
+    # phasor = cn.generate_phasor_data(amplitude_fault, phase_fault[0], 0)
+    # print(phasor)
     # phasor_1 = cn.generate_phasor_data(amplitude_fault, 60, 0)
     # print(phasor_1)
     # # add
@@ -65,4 +65,5 @@ if __name__ == '__main__':
     # # print(phasor_ph)
     # print(phasor)
     # print(phasor_1)
-
+    phasor_test = cn.generate_phasor_constant_data(100, 10, [2, 10])
+    print(phasor_test)

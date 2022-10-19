@@ -53,6 +53,16 @@ def generate_phasor_data(amplitude, phase, mode):
     return phasor_ploar
 
 
+def generate_phasor_constant_data(amplitude, phase, shape):
+    phasor_ploar = np.full((1, 1), np.nan)
+    if len(shape) == 2 and shape[0] == 2:
+        phasor_ploar = np.ones(shape, dtype=float)
+        phasor_ploar[0] = phasor_ploar[0] * amplitude
+        phasor_ploar[1] = phasor_ploar[1] * phase
+
+    return phasor_ploar
+
+
 def convert_ri_to_ap(phasor_ri):
     """
     将直角坐标系相量转换为极坐标系
@@ -68,7 +78,7 @@ def convert_ri_to_ap(phasor_ri):
         for i in range(0, phasor_ri[0].size):
             z_ploar = cmath.polar(complex(phasor_ri[0, i], phasor_ri[1, i]))
             amplitude.append(z_ploar[0])
-            phase.append(z_ploar[1] * 180/cmath.pi)
+            phase.append(z_ploar[1] * 180 / cmath.pi)
         # print(amplitude)
         # print(phase)
         phasor_ploar = np.array([amplitude, phase], dtype=float)
@@ -87,7 +97,7 @@ def convert_ap_to_ri(phasor_ploar):
     imag = []
     if phasor_ploar.any != np.nan:
         # 将相位转换为弧度
-        phasor_ploar[1] = (phasor_ploar[1] / 180)*cmath.pi
+        phasor_ploar[1] = (phasor_ploar[1] / 180) * cmath.pi
         # 遍历phasor_ploar的幅值与相位
         for i in range(0, phasor_ploar[0].size):
             rect = cmath.rect(phasor_ploar[0, i], phasor_ploar[1, i])
@@ -96,7 +106,7 @@ def convert_ap_to_ri(phasor_ploar):
         # print(real)
         # print(imag)
         phasor_ri = np.array([real, imag], dtype=float)
-        phasor_ploar[1] = (phasor_ploar[1] / cmath.pi)*180
+        phasor_ploar[1] = (phasor_ploar[1] / cmath.pi) * 180
     return phasor_ri
 
 
@@ -199,8 +209,8 @@ def mul_phasor(phasor_a, phasor_b, phasor_mode):
         if phasor_mode[1] == 0:
             phasor_tb = convert_ri_to_ap(phasor_b)
         # print(phasor_ta+phasor_tb)
-        phasor_amplitude = phasor_ta[0]*phasor_tb[0]
-        phasor_phase = phasor_ta[1]+phasor_tb[1]
+        phasor_amplitude = phasor_ta[0] * phasor_tb[0]
+        phasor_phase = phasor_ta[1] + phasor_tb[1]
         # print(phasor_amplitude)
         # print(phasor_phase)
         phasor_ret = convert_ap_to_ri(np.array([phasor_amplitude, phasor_phase]))
@@ -230,5 +240,3 @@ def div_phasor(phasor_a, phasor_b, phasor_mode):
         # print(phasor_phase)
         phasor_ret = convert_ap_to_ri(np.array([phasor_amplitude, phasor_phase]))
     return phasor_ret
-
-
