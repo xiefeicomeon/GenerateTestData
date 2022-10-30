@@ -23,8 +23,6 @@ def generate_test_data():
     pass
 
 
-
-
 # calculate theoretical impedance and distance and voltage drop
 def calculate_theoretical_data():
     print()
